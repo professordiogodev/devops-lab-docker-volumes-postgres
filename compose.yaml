@@ -1,0 +1,8 @@
+# TODO: the database as it should have been. Project name pollie-db.
+#   - image postgres:16, restart unless-stopped
+#   - the data in a NAMED volume (pgdata) mounted at /var/lib/postgresql/data
+#   - the password from a file, NOT from an environment value: a Compose "secret" from ./secrets/db_password.txt,
+#     and POSTGRES_PASSWORD_FILE=/run/secrets/db_password ; POSTGRES_USER=pollie, POSTGRES_DB=pollie
+#   - NO published ports (other containers reach it by its service name on the project network)
+#   - a healthcheck with pg_isready
+# Create the secret file yourself, with a long random password:  openssl rand -hex 16 > secrets/db_password.txt   (git ignores it)

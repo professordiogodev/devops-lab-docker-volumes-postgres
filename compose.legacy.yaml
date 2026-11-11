@@ -1,0 +1,11 @@
+# PROVIDED: the previous engineer's database. It "works", and loses everything on every deploy.
+name: pollie-legacy
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: pollie
+      POSTGRES_PASSWORD: pollie123
+      POSTGRES_DB: pollie
+    ports:
+      - "5432:5432"
