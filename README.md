@@ -22,11 +22,18 @@
 
 ## 🎬 The situation
 
-<p align="center"><img src="assets/gifs/situation.gif" width="300" alt="Animation: docker volume ls"></p>
+<p align="center"><img src="assets/gifs/situation.gif" width="300" alt="Data surviving in a named volume after the container is removed"></p>
 
-Pollie's test database lives in a container. Every weekly deploy, the polls the team created that week are gone, and the team has learned to expect it. The previous engineer's explanation: "containers are ephemeral, that's how Docker works". That is half true, and the false half is expensive: the data of a container is **not** supposed to be inside the container, and Docker has features for exactly that. Nobody used them.
+```text
+RESCUE LOG - Pollie test database
+Day 1  : the weekly deploy ran. The polls created this week are gone.
+Day 1  : previous engineer: "containers are ephemeral, that's how Docker works."
+Day 1  : half true. The false half is expensive.
+Search : the data is probably NOT gone. It is on the disk, in a volume that
+         nobody named and nobody looks at.
+```
 
-Better news first: the data is probably **not** gone. It is on the disk, in a volume that nobody named and nobody looks at. Your first job is to find it and rescue it. Your second job is to build the database container the right way: data in a named volume, the password in a secret and not in the compose file, no port open to the world, and a backup script that someone has actually restored from.
+Two missions, in this order. **Mission 1: find the data and rescue it.** **Mission 2: build the database container the right way**, with the data in a named volume, the password in a secret and not in the compose file, no port open to the world, and a backup script that someone has actually restored from.
 
 > [!IMPORTANT]
 > **Your mission**
@@ -52,7 +59,7 @@ It starts the legacy database from `compose.legacy.yaml`, adds three polls, then
 
 <p align="center"><img src="assets/divider.svg" alt="" width="100%"></p>
 
-## Part 1 - Where did the data go?
+## Act 1 - Where did the data go?
 
 <p align="center"><img src="assets/gifs/recon.gif" width="300" alt="Animation: pg_dump | psql"></p>
 
@@ -77,7 +84,7 @@ Open `backups/recovered.sql`: your three polls are in it.
 
 <p align="center"><img src="assets/divider.svg" alt="" width="100%"></p>
 
-## Part 2 - The database, done right
+## Act 2 - The database, done right
 
 Write `compose.yaml` (the comments list the requirements): project `pollie-db`, a **named volume** `pgdata`, the password from a file through a Compose **secret** and `POSTGRES_PASSWORD_FILE`, no published ports, a healthcheck, a restart policy. Create the secret file with a random password: it lives in `secrets/` and git ignores it.
 
